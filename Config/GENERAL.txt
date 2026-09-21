@@ -1,5 +1,4 @@
-#科学插件调整
-CONFIG_PACKAGE_luci-app-homeproxy=y
+#代理插件（按机型在 PRIVATE.txt 中选择，如 luci-app-nikki）
 #增加插件
 CONFIG_PACKAGE_luci-app-autoreboot=y
 CONFIG_PACKAGE_luci-app-partexp=y
