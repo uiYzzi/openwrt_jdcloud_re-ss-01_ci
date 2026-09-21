@@ -34,6 +34,12 @@ CONFIG_PACKAGE_kmod-tun=y
 CONFIG_PACKAGE_kmod-nft-socket=y
 CONFIG_PACKAGE_kmod-nft-tproxy=y
 
+### Tailscale（独立客户端，路由器常驻节点/子网路由）###
+CONFIG_PACKAGE_tailscale=y
+CONFIG_PACKAGE_luci-app-tailscale-community=y
+CONFIG_PACKAGE_luci-i18n-tailscale-community-zh-cn=y
+CONFIG_PACKAGE_ip6tables-nft=y
+
 ### 保持单一代理栈（只用 Nikki）###
 CONFIG_PACKAGE_luci-app-passwall=n
 CONFIG_PACKAGE_luci-app-passwall2=n

@@ -32,8 +32,8 @@
 
 ## 如何编译
 
-- **手动**：Actions → **JDCloud-RE-SS-01** → Run workflow
-- **自动**：每月 1 号 05:21（北京时间）由 `Auto-Clean` 自动触发一次
+- **仅手动**：Actions → **JDCloud-RE-SS-01** → Run workflow
+- 不设任何定时自动编译（`Auto-Clean` / `Cache-Clean` 也已改为仅手动）
 - 编译完成后在 **Releases** 里下载对应固件包
 
 ## 如何刷入
