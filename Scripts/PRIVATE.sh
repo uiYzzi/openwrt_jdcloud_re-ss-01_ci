@@ -4,19 +4,7 @@
 # Sourced by Scripts/Packages.sh, so it runs BEFORE Scripts/Settings.sh.
 
 # ---------------------------------------------------------------------------
-# 1) Keep the stock OpenWrt "bootstrap" theme.
-#    The workflow pins WRT_THEME=aurora, which we cannot change from here
-#    (workflow files need the GitHub "workflow" token scope). Patch the CI's
-#    Settings.sh so it keeps luci-theme-bootstrap and skips the aurora config app.
-# ---------------------------------------------------------------------------
-SETTINGS="$GITHUB_WORKSPACE/Scripts/Settings.sh"
-if [ -f "$SETTINGS" ]; then
-	sed -i 's/luci-theme-\$WRT_THEME/luci-theme-bootstrap/g' "$SETTINGS"
-	sed -i '/luci-app-\$WRT_THEME-config/d' "$SETTINGS"
-fi
-
-# ---------------------------------------------------------------------------
-# 2) Default LAN IP -> 10.10.20.1
+# 1) Default LAN IP -> 10.10.20.1
 #    Patched into config_generate first, so Settings.sh's
 #    "192.168.x.x -> WRT_IP" substitution finds no match and leaves ours.
 # ---------------------------------------------------------------------------
@@ -26,7 +14,7 @@ if [ -f "$CFG_FILE" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 3) Runtime defaults (hostname / SSID / key / theme) via uci-defaults,
+# 2) Runtime defaults (hostname / SSID / key) via uci-defaults,
 #    which Settings.sh cannot override.
 # ---------------------------------------------------------------------------
 mkdir -p ./package/base-files/files/etc/uci-defaults
@@ -49,9 +37,6 @@ for r in $(uci -q show wireless | sed -n "s/^wireless\.\([^.]*\)\.ssid=.*/\1/p")
 	uci -q set wireless.$r.key='12345678'
 done
 uci -q commit wireless
-
-uci -q set luci.main.mediaurlbase='/luci-static/bootstrap'
-uci -q commit luci
 
 exit 0
 EOS

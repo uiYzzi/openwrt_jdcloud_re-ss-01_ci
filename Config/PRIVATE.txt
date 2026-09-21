@@ -26,7 +26,9 @@ CONFIG_PACKAGE_coreutils-base64=y
 CONFIG_PACKAGE_unzip=y
 CONFIG_PACKAGE_ca-bundle=y
 
-### ShellCrash / sing-box 运行依赖（不预装代理核心）###
+### HomeProxy / sing-box 运行依赖 ###
+CONFIG_PACKAGE_luci-app-homeproxy=y
+CONFIG_PACKAGE_homeproxy=y
 CONFIG_PACKAGE_dnsmasq-full=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_nftables-json=y
@@ -35,8 +37,7 @@ CONFIG_PACKAGE_kmod-tun=y
 CONFIG_PACKAGE_kmod-nft-socket=y
 CONFIG_PACKAGE_kmod-nft-tproxy=y
 
-### 保持单一代理栈 ###
+### 保持单一代理栈（只用 HomeProxy）###
 CONFIG_PACKAGE_luci-app-passwall=n
 CONFIG_PACKAGE_luci-app-passwall2=n
 CONFIG_PACKAGE_luci-app-openclash=n
-CONFIG_PACKAGE_luci-app-homeproxy=n
