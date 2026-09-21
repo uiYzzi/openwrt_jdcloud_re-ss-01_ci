@@ -1,0 +1,42 @@
+# ============================================================
+# 便携路由（TravelRouter）定制 —— 追加在 GENERAL.txt 之后，优先级更高
+# 目标设备：JDCloud RE-SS-01 (qualcommax/ipq60xx)
+# ============================================================
+
+### 公共 Wi-Fi / 有线网络上联 ###
+CONFIG_PACKAGE_luci-app-travelmate=y
+CONFIG_PACKAGE_luci-app-watchcat=y
+CONFIG_PACKAGE_luci-app-ttyd=y
+
+### Tailscale ###
+CONFIG_PACKAGE_tailscale=y
+CONFIG_PACKAGE_luci-app-tailscale-community=y
+
+### 基础工具与低内存保护 ###
+CONFIG_PACKAGE_zram-swap=y
+CONFIG_PACKAGE_kmod-lib-lz4=y
+CONFIG_KERNEL_ZRAM_BACKEND_LZ4=y
+CONFIG_KERNEL_ZRAM_DEF_COMP_LZ4=y
+CONFIG_PACKAGE_bash=y
+CONFIG_PACKAGE_tmux=y
+CONFIG_PACKAGE_nano-full=y
+CONFIG_PACKAGE_zoneinfo-asia=y
+CONFIG_PACKAGE_coreutils-nohup=y
+CONFIG_PACKAGE_coreutils-base64=y
+CONFIG_PACKAGE_unzip=y
+CONFIG_PACKAGE_ca-bundle=y
+
+### ShellCrash / sing-box 运行依赖（不预装代理核心）###
+CONFIG_PACKAGE_dnsmasq-full=y
+# CONFIG_PACKAGE_dnsmasq is not set
+CONFIG_PACKAGE_nftables-json=y
+CONFIG_PACKAGE_iptables-nft=y
+CONFIG_PACKAGE_kmod-tun=y
+CONFIG_PACKAGE_kmod-nft-socket=y
+CONFIG_PACKAGE_kmod-nft-tproxy=y
+
+### 保持单一代理栈 ###
+CONFIG_PACKAGE_luci-app-passwall=n
+CONFIG_PACKAGE_luci-app-passwall2=n
+CONFIG_PACKAGE_luci-app-openclash=n
+CONFIG_PACKAGE_luci-app-homeproxy=n
