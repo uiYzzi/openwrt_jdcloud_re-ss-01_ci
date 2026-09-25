@@ -21,7 +21,7 @@
 
 **ZN M2（主路由版，无 WiFi）**
 - **无 WiFi**：禁用 ath11k 驱动/固件，DTS 使用 nowifi 变体（纯有线路由）
-- 只装 **Nikki**（mihomo）+ 必要依赖，不带便携路由的插件
+- 只装 **Nikki**（mihomo）+ 多WAN 负载均衡 **mwan3** + 必要依赖
 
 ## 如何编译（仅手动）
 

@@ -1,5 +1,5 @@
 # ============================================================
-# ZN-M2（家里主路由）定制 —— 只要 Nikki，不要便携路由器插件
+# ZN-M2（家里主路由，无 WiFi）定制 —— 只要 Nikki + 多WAN负载均衡
 # 目标设备：ZN M2 (qualcommax/ipq60xx, NAND)
 # ============================================================
 
@@ -9,6 +9,10 @@ CONFIG_PACKAGE_nikki=y
 CONFIG_PACKAGE_mihomo-meta=y
 CONFIG_PACKAGE_dnsmasq-full=y
 # CONFIG_PACKAGE_dnsmasq is not set
+
+### 多WAN 负载均衡 / 故障转移 ###
+CONFIG_PACKAGE_mwan3=y
+CONFIG_PACKAGE_luci-app-mwan3=y
 
 ### 保持单一代理栈（只用 Nikki）###
 CONFIG_PACKAGE_luci-app-passwall=n
