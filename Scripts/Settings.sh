@@ -37,10 +37,12 @@ echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config
 echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
 echo "CONFIG_PACKAGE_luci-app-$WRT_THEME-config=y" >> ./.config
 
-#引入私有扩展配置
-if [ -f "$GITHUB_WORKSPACE/Config/PRIVATE.txt" ]; then
-	echo "Applying private configurations from PRIVATE.txt..."
-	cat $GITHUB_WORKSPACE/Config/PRIVATE.txt >> ./.config
+#引入私有扩展配置（优先按机型：PRIVATE-<配置名>.txt，其次通用 PRIVATE.txt）
+PRIVATE_FILE="$GITHUB_WORKSPACE/Config/PRIVATE-$WRT_CONFIG.txt"
+[ -f "$PRIVATE_FILE" ] || PRIVATE_FILE="$GITHUB_WORKSPACE/Config/PRIVATE.txt"
+if [ -f "$PRIVATE_FILE" ]; then
+	echo "Applying private configurations from $(basename "$PRIVATE_FILE")..."
+	cat "$PRIVATE_FILE" >> ./.config
 fi
 
 #手动调整的插件

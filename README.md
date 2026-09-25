@@ -1,72 +1,74 @@
-# JDCloud RE-SS-01 便携路由固件（云编译）
-
-京东云 RE-SS-01（亚瑟 AX1800 Pro，IPQ6000 / qualcommax / ipq60xx）专用 OpenWrt 固件的云编译仓库。
+# OpenWrt 云编译固件（JDCloud RE-SS-01 / ZN-M2）
 
 基于 [VIKINGYFY/OpenWRT-CI](https://github.com/VIKINGYFY/OpenWRT-CI) 的 CI 框架，源码使用
-[VIKINGYFY/immortalwrt](https://github.com/VIKINGYFY/immortalwrt)（`main`），**只编译本机型**
-（`jdcloud_re-ss-01`）一个配置。
+[VIKINGYFY/immortalwrt](https://github.com/VIKINGYFY/immortalwrt)（`main`），为两台设备分别定制：
 
-## 固件特性
+| 设备 | 定位 | 默认地址 | Wi-Fi | 主题 | 代理 |
+|---|---|---|---|---|---|
+| **JDCloud RE-SS-01**（亚瑟 AX1800 Pro） | 便携路由 | `10.10.20.1`（`TravelRouter`） | `TravelRouter` / `12345678` | aurora | **Nikki**（mihomo） |
+| **ZN M2**（无 WiFi，NAND） | 家里主路由 | `10.10.10.1`（`ZN-M2`） | 无 | aurora | **Nikki**（mihomo） |
 
-| 项目 | 说明 |
-|---|---|
-| 设备 | JDCloud RE-SS-01 / 亚瑟 AX1800 Pro |
-| 平台 | qualcommax / ipq60xx |
-| 主题 | luci-theme-aurora |
-| 代理 | **HomeProxy**（底层 sing-box，**内置 Tailscale endpoint**） |
-| 上联 | travelmate（公共 Wi-Fi 中继）、relayd |
-| 运维 | watchcat（断网自愈）、ttyd（网页终端）、zram-swap |
-| 其他 | bash / tmux / nano / htop / unzip / zoneinfo-asia 等基础工具 |
+> 初始密码均为空，首次登录后请自行设置。
 
-> 不再单独安装 `tailscale` 包：HomeProxy 的 sing-box 已内置 Tailscale（`with_tailscale`），
-> 可在 HomeProxy 里配置，兼顾代理与内网组网。
+## 固件差异
 
-## 默认参数
+**JDCloud RE-SS-01（便携版）**
+- 代理：Nikki（mihomo 内核，原生支持 Clash 订阅，无需订阅转换）
+- 上联：travelmate（公共 Wi-Fi 中继）、relayd
+- 运维：watchcat（断网自愈）、ttyd（网页终端）、zram-swap
+- 组网：Tailscale（`tailscale` + `luci-app-tailscale-community` + 中文 i18n）
+- 基础：bash / tmux / nano / htop / unzip / zoneinfo-asia 等
 
-| 项目 | 值 |
-|---|---|
-| 管理地址 | `http://10.10.20.1`（主机名 `TravelRouter`） |
-| Wi-Fi 名称 | `TravelRouter` |
-| Wi-Fi 密码 | `12345678` |
-| 初始密码 | 无（首次登录后请自行设置） |
+**ZN M2（主路由版，无 WiFi）**
+- **无 WiFi**：禁用 ath11k 驱动/固件，DTS 使用 nowifi 变体（纯有线路由）
+- 只装 **Nikki**（mihomo）+ 必要依赖，不带便携路由的插件
 
-## 如何编译
+## 如何编译（仅手动）
 
-- **仅手动**：Actions → **JDCloud-RE-SS-01** → Run workflow
-- 不设任何定时自动编译（`Auto-Clean` / `Cache-Clean` 也已改为仅手动）
-- 编译完成后在 **Releases** 里下载对应固件包
+Actions 里选对应工作流 → **Run workflow**：
+
+- **Build-TravelRouter** → JDCloud RE-SS-01 便携版
+- **Build-ZN-M2** → ZN-M2 主路由版
+
+已关闭所有定时自动编译（`Auto-Clean` / `Cache-Clean` 也改为仅手动）。编译完成后在 **Releases** 下载。
 
 ## 如何刷入
 
-本机型推荐用 **U-Boot 网页刷机**：
+**JDCloud RE-SS-01（eMMC）**：U-Boot 网页刷 `...-squashfs-factory.bin`
 
-1. 路由器断电，按住 `reset` 不放，插电，等指示灯变成**稳定蓝灯**后松手
+**ZN M2（NAND）**：U-Boot 网页刷 `...-squashfs-factory.ubi`
+
+通用步骤：
+1. 路由器断电，按住 `reset` 不放，插电，等指示灯变成稳定蓝灯后松手
 2. 电脑网线接 LAN 口，静态 IP 设为 `192.168.1.10`
-3. 无痕浏览器打开 `http://192.168.1.1`，上传
-   `...-squashfs-factory.bin`
-4. 等待刷写完成自动重启，之后访问 `http://10.10.20.1`
+3. 无痕浏览器打开 `http://192.168.1.1`，上传对应 factory 文件
+4. 刷完自动重启，按上面的默认地址访问
 
-> 若当前已在 OpenWrt/ImmortalWrt 上，也可用 `...-squashfs-sysupgrade.bin` 升级；
-> 跨固件体系（如 iStoreOS/QWRT）时请用 U-Boot 刷 `factory.bin`。
+> 已在 OpenWrt/ImmortalWrt 上的设备，也可用 `...-squashfs-sysupgrade.bin` 升级。
 
-## 目录结构
+## 代码结构
 
 ```
-.github/workflows/   自定义 CI
-  ├─ JDCloud-RE-SS-01 (QCA-ALL.yml)   本机型编译流程
-  ├─ WRT-CORE.yml                     公用编译核心
-  ├─ Auto-Clean.yml                   每月清理并触发编译
-  └─ Cache-Clean.yml                  每周清理缓存
-Scripts/             自定义脚本
-  ├─ Settings.sh       CI 默认调整（主题/主机名/SSID 等）
-  ├─ Packages.sh       第三方插件拉取
+.github/workflows/
+  ├─ Build-TravelRouter.yml   JDCloud RE-SS-01 便携版编译
+  ├─ Build-ZN-M2.yml          ZN-M2 主路由版编译
+  ├─ WRT-CORE.yml             公用编译核心
+  ├─ Auto-Clean.yml           手动清理（已关定时）
+  └─ Cache-Clean.yml          手动清缓存（已关定时）
+Scripts/
+  ├─ Settings.sh       CI 默认调整（主题/主机名/SSID、按机型引入私有配置）
+  ├─ Packages.sh       第三方插件拉取（会自动 source PRIVATE.sh）
   ├─ Handles.sh        插件修补
-  └─ PRIVATE.sh        本机型定制（LAN IP / 主机名 / SSID）
-Config/              自定义配置
-  ├─ JDCloud-RE-SS-01.txt   目标平台与设备
-  ├─ GENERAL.txt            通用插件与内核选项
-  └─ PRIVATE.txt            便携路由定制插件
+  └─ PRIVATE.sh        按机型定制 LAN IP / 主机名 / SSID
+Config/
+  ├─ JDCloud-RE-SS-01.txt          设备选择（便携版）
+  ├─ ZN-M2-WIFI-NO.txt             设备选择（ZN-M2，无 WiFi）
+  ├─ PRIVATE-JDCloud-RE-SS-01.txt  便携版插件定制
+  ├─ PRIVATE-ZN-M2-WIFI-NO.txt     主路由版插件定制（只 Nikki）
+  └─ GENERAL.txt                   通用插件与内核选项
 ```
+
+> 说明：`Settings.sh` 会优先读取 `Config/PRIVATE-<配置名>.txt`（按机型），不存在时回退到 `Config/PRIVATE.txt`。
 
 ## 致谢
 

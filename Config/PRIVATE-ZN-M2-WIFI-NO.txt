@@ -1,0 +1,17 @@
+# ============================================================
+# ZN-M2（家里主路由）定制 —— 只要 Nikki，不要便携路由器插件
+# 目标设备：ZN M2 (qualcommax/ipq60xx, NAND)
+# ============================================================
+
+### 代理：Nikki（mihomo 内核，原生支持 Clash 订阅，无需订阅转换）###
+CONFIG_PACKAGE_luci-app-nikki=y
+CONFIG_PACKAGE_nikki=y
+CONFIG_PACKAGE_mihomo-meta=y
+CONFIG_PACKAGE_dnsmasq-full=y
+# CONFIG_PACKAGE_dnsmasq is not set
+
+### 保持单一代理栈（只用 Nikki）###
+CONFIG_PACKAGE_luci-app-passwall=n
+CONFIG_PACKAGE_luci-app-passwall2=n
+CONFIG_PACKAGE_luci-app-openclash=n
+CONFIG_PACKAGE_luci-app-homeproxy=n

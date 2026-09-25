@@ -1,43 +1,21 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-# Portable (TravelRouter) defaults for JDCloud RE-SS-01.
-# Sourced by Scripts/Packages.sh, so it runs BEFORE Scripts/Settings.sh.
+# 通用运行时默认值（设备无关）。
+# LAN IP / 主机名 / SSID / WiFi 密码统一由 Scripts/Settings.sh 依据 workflow 里的
+# WRT_IP / WRT_NAME / WRT_SSID / WRT_WORD 写入，这里只补一个默认时区。
+# 说明：本脚本由 Scripts/Packages.sh `source` 调用，务必要用 return 而不是 exit。
 
-# ---------------------------------------------------------------------------
-# 1) Default LAN IP -> 10.10.20.1
-#    Patched into config_generate first, so Settings.sh's
-#    "192.168.x.x -> WRT_IP" substitution finds no match and leaves ours.
-# ---------------------------------------------------------------------------
-CFG_FILE="./package/base-files/files/bin/config_generate"
-if [ -f "$CFG_FILE" ]; then
-	sed -i "s/192\.168\.[0-9]\+\.[0-9]\+/10.10.20.1/g" "$CFG_FILE"
-fi
+# 清理历史遗留的便携版 uci-defaults（早期版本创建，现已不用）
+rm -f ./package/base-files/files/etc/uci-defaults/zzz-travelrouter
 
-# ---------------------------------------------------------------------------
-# 2) Runtime defaults (hostname / SSID / key) via uci-defaults,
-#    which Settings.sh cannot override.
-# ---------------------------------------------------------------------------
 mkdir -p ./package/base-files/files/etc/uci-defaults
-cat > ./package/base-files/files/etc/uci-defaults/zzz-travelrouter <<'EOS'
+cat > ./package/base-files/files/etc/uci-defaults/zzz-custom <<'EOS'
 #!/bin/sh
 uci -q batch <<'UCI'
-set system.@system[0].hostname='TravelRouter'
 set system.@system[0].timezone='CST-8'
 set system.@system[0].zonename='Asia/Shanghai'
 commit system
 UCI
-
-uci -q set network.lan.ipaddr='10.10.20.1'
-uci -q set network.lan.netmask='255.255.255.0'
-uci -q commit network
-
-for r in $(uci -q show wireless | sed -n "s/^wireless\.\([^.]*\)\.ssid=.*/\1/p"); do
-	uci -q set wireless.$r.ssid='TravelRouter'
-	uci -q set wireless.$r.encryption='psk2'
-	uci -q set wireless.$r.key='12345678'
-done
-uci -q commit wireless
-
 exit 0
 EOS
-chmod +x ./package/base-files/files/etc/uci-defaults/zzz-travelrouter
+chmod +x ./package/base-files/files/etc/uci-defaults/zzz-custom

@@ -2,16 +2,11 @@
 # Copyright (C) 2026 VIKINGYFY
 
 #CI项目
-name: JDCloud-RE-SS-01
+name: Build-TravelRouter
 
 #CI计划
 on:
-  #自动编译：当Auto-Clean运行完成后
-  workflow_run:
-    workflows: ["Auto-Clean"]
-    types:
-      - completed
-  #手动编译
+  #仅手动编译（已关闭自动触发）
   workflow_dispatch:
     inputs:
       PACKAGE:
